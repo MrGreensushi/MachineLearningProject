@@ -2,7 +2,7 @@ import os
 from PIL import Image
 import numpy as np
 
-class_names = ['paris_defense', 'paris_eiffel', 'paris_general', 'paris_invalides', 'paris_louvre', 'paris_moulinrouge', 'paris_museedorsay', 'paris_notredame', 'paris_pantheon', 'paris_pompidou', 'paris_sacrecoeur', 'paris_triomphe' ]
+class_names = ['paris_defense', 'paris_eiffel', 'paris_invalides', 'paris_louvre', 'paris_moulinrouge', 'paris_museedorsay', 'paris_notredame', 'paris_pantheon', 'paris_pompidou', 'paris_sacrecoeur', 'paris_triomphe' ]
 
 good = set();
 ok = set();
