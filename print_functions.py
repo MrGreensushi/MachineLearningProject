@@ -56,7 +56,16 @@ def print_data_aug(generatore):
 def stampa_tripletta(tripletta):
     fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(10,10))
     for i in range(0,3):
-        img = tripletta[i][0]
+        img = tripletta[i]
         axs[i].imshow(img.numpy())
+        axs[i].axis('off')
+    return
+
+#stampa tutte le immagini di una certa classe
+def print_class_good_images(dataset, classe):
+    fig, axs = plt.subplots(nrows=len(dataset[classe][1]), ncols=1, figsize=(150,150))
+    for i in range(0,len(dataset[classe][1])):
+        img = dataset[classe][1][i]
+        axs[i].imshow(img)
         axs[i].axis('off')
     return
