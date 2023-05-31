@@ -1,6 +1,9 @@
 import os
 from PIL import Image
 import numpy as np
+import random
+
+user = [''];
 
 class_names = ['paris_defense', 'paris_eiffel', 'paris_invalides', 'paris_louvre', 'paris_moulinrouge', 'paris_museedorsay', 'paris_notredame', 'paris_pantheon', 'paris_pompidou', 'paris_sacrecoeur', 'paris_triomphe' ]
 
@@ -9,16 +12,33 @@ ok = set();
 bad = set();
 junk = set();
 
-dataset = [ [[],[],[],[]] for x in range(len(class_names))] 
+dataset = [ [[],[],[],[]] for x in range(len(class_names))]
 
-def get_dataset(groundtruth_dir, dataset_dir, class_names):
+def set_user(x):
+    user[0] = x
+    return
+
+def get_dirs():
+    if(user[0]=="Daniele"):
+        groundtruth_dir = r"C:\Users\dansp\OneDrive\Desktop\gdz"
+        dataset_dir = r"C:\Users\dansp\OneDrive\Desktop\paris"
+    elif(user[0]=="Andrea"):
+        groundtruth_dir = r"D:\Andrea\Downloads\gzp"
+        dataset_dir = r"D:\Andrea\Downloads\Paris120x120"
+    else:
+        groundtruth_dir = r"null"
+        dataset_dir = r"null"
+    print("groundtruth_dir: ", groundtruth_dir, "\ndataset_dir: ", dataset_dir)
+    return groundtruth_dir, dataset_dir
+
+def get_dataset(groundtruth_dir, dataset_dir, class_names, dimensione_img):
     leggi_ground_truth_files(groundtruth_dir)
     print("Numero di good: ", len(good))
     print("Numero di ok: ", len(ok))
     print("Numero di bad: ", len(bad))
     print("Numero di junk: ", len(junk))
 
-    carica_dataset_da_directory(dataset_dir, class_names)
+    carica_dataset_da_directory(dataset_dir, class_names, dimensione_img)
     return dataset
 
 def get_classnames():
@@ -55,7 +75,7 @@ def leggi_file(f, s):
 
 #Carica il dataset scartando le foto che non hanno una valutazione o ne hanno
 #più di una
-def carica_dataset_da_directory(dataset_dir, class_names):
+def carica_dataset_da_directory(dataset_dir, class_names, dimensione_img):
   #cicla nelle entry della directory
   for filename in os.listdir(dataset_dir):
     f = os.path.join(dataset_dir, filename)
@@ -63,17 +83,17 @@ def carica_dataset_da_directory(dataset_dir, class_names):
     if os.path.isfile(f):
       valutazione = carica_valutazione(filename);
       label = carica_label(filename, class_names)
-      carica_foto(f, dataset, valutazione, label)
+      carica_foto(f, dataset, valutazione, label, dimensione_img)
   return;
 
 
-def carica_foto(f, dataset, valutazione, label):
+def carica_foto(f, dataset, valutazione, label, dimensione_img):
   if label == -1 or valutazione < 0:
     return #foto senza valutazione o senza label, scartata
 
   img = Image.open(f)
   pix = np.array(img)/255
-  if(pix.shape != (120,120,3)): #check sulle dimensioni dell'immagine
+  if(pix.shape != dimensione_img): #check sulle dimensioni dell'immagine
     return
   dataset[label][valutazione].append(pix)
   return;
@@ -109,3 +129,10 @@ def carica_valutazione(filename):
     if x[i] == 1:
       return i #0:good, 1:ok, 2:bad, 3:junk
   return 0;
+
+def shuffle(data):
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            random.shuffle(data[i][j])
+    return
+    
